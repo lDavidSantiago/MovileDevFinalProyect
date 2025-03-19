@@ -1,15 +1,17 @@
 import { Text, View,StyleSheet, TouchableOpacity } from "react-native";
 import {styles} from "../../styles/auth.styles";
 import { Image } from "react-native";
-import {Link} from "expo-router"
+import { withLayoutContext } from "expo-router";
+import { useAuth } from "@clerk/clerk-expo";
 export default function Index() {
+  const {signOut} = useAuth();  
   return (
     <View style={styles.container}>
-      <Text>Hello Worldaaaaaaaaaa</Text> 
-      <Image
-        source={{ uri: 'https://i.imgur.com/1iCzwsi.png' }}
-        style={{ width: 200, height: 200 }}
-      />
+      <TouchableOpacity onPress={() => signOut()}>
+        <Text style={{color:"white"}}>
+          SingOut 
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
