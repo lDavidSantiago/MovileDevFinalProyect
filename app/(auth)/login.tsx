@@ -4,8 +4,26 @@ import { styles } from '@/styles/auth.styles'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '@/constants/theme'
 import { Image } from "react-native";
+import { useRouter } from 'expo-router'
+import { useSSO } from '@clerk/clerk-expo'
+import { Try } from 'expo-router/build/views/Try'
 
 export default function login() {
+  const {startSSOFlow} = useSSO(); //Single Sign On
+  const router = useRouter();
+  const handleGoogleSignIn = async () => {
+    try {
+      const {createdSessionId,setActive} = await startSSOFlow({strategy:"oauth_google"});
+      if(setActive && createdSessionId){
+        setActive({session:createdSessionId})
+        //Al iniciar sesion el usuario es enviado a /home
+        router.replace("/(tabs)/home")
+      }
+    } catch(error){
+      console.log("OAuth error",error)
+    }
+
+  };
   return (
     <View style={styles.container}>
       {/*Brand Section*/}
@@ -30,8 +48,8 @@ export default function login() {
       <View style={styles.loginSection}>
         <TouchableOpacity
           style={styles.googleButton}
-          onPress={() => console.log("Continue with Google")}
-          activeOpacity={0.9}
+          onPress={handleGoogleSignIn}
+          activeOpacity={.8}
         >
           <View style={styles.googleIconContainer}>
             <Ionicons name="logo-google" size={20} color={COLORS.surface} />
