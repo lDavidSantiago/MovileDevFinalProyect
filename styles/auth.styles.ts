@@ -1,14 +1,18 @@
 // styles/auth.styles.ts
 import { COLORS } from "@/constants/theme";
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions,useColorScheme } from "react-native";
 
 const { width, height } = Dimensions.get("window");
+const theme = useColorScheme();
+const isDarkTheme = theme ==='dark';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: isDarkTheme ? '#202020' : 'white',
+    justifyContent: 'space-between'
   },
+  
   brandSection: {
     alignItems: "center",
     marginTop: height * 0.12,
@@ -88,7 +92,7 @@ export const styles = StyleSheet.create({
   termsText: {
     textAlign: "center",
     fontSize: 12,
-    color: COLORS.grey,
+    color: isDarkTheme? '#dddddd':'black',
     maxWidth: 280,
   },
 });
