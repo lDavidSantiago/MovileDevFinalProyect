@@ -22,7 +22,7 @@ export default function Index() {
           ➕New Element</Text>
         </TouchableOpacity>
 
-        {/* 📌 creacion botones  */}
+        {/*  creacion botones  */}
         {elements.map((element) => (
           <TouchableOpacity key={element.id}>
             <Text style={styles.buttonText}>{element.type}</Text>
@@ -31,7 +31,7 @@ export default function Index() {
 
         ))}
 
-        {/* 📌 MODAL */}
+        {/*  MODAL */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -43,7 +43,7 @@ export default function Index() {
               <Text style={styles.modalTitle}>Crear Nuevo Elemento</Text>
 
               <TouchableOpacity onPress={() => {
-                addNewElement("📋 To-Do List " );
+                addNewElement("To-Do List " );
                 setModalVisible(false)}}>
                 <Text style={styles.optionText}>
                 📋 To-Do List 
@@ -51,7 +51,7 @@ export default function Index() {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => {
-                addNewElement("📆 Calendar");
+                addNewElement("Calendar");
                 setModalVisible(false)}}>
                 <Text style={styles.optionText}>
                 📆 Calendar
@@ -59,7 +59,7 @@ export default function Index() {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => {
-                addNewElement("📝 Notes");
+                addNewElement("Notes");
                 setModalVisible(false)}}>
                 <Text style={styles.optionText}>
                 📝 Notes

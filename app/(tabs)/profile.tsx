@@ -11,7 +11,7 @@ export default function Profile() {
   const {user} = useUser();
   const [name, setName] = useState("");
   const userName = user?.fullName || "User";
-  const userProfileImage = user?.imageUrl || require("../../assets/images/profile.png");
+  const userProfileImage = user?.imageUrl;
   return (
     <View style={styles.container}>
 
