@@ -1,6 +1,8 @@
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import InitialLyout from "@/components/initialLayout";
 import ClerkAndConvexProvider from "@/providers/ClerkAndCovexProviders";
+import {ThemeProvider} from '@/providers/themeContext';
+import { useTheme } from '@/providers/themeContext';
 
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
@@ -13,15 +15,17 @@ if (!publishableKey) {
 
 
 export default function RootLayout() {
+  const {darkMode} = useTheme();
   return (
-      <ClerkAndConvexProvider>
-        <SafeAreaProvider>
-          <SafeAreaView style={{ flex:1 ,backgroundColor:"#000"}}>
-            {/*Check if user is logged in or not*/}
-            <InitialLyout/> 
-          </SafeAreaView>
-        </SafeAreaProvider>
-        </ClerkAndConvexProvider>
-
+    <ThemeProvider>
+        <ClerkAndConvexProvider>
+          <SafeAreaProvider>
+            <SafeAreaView style={{ flex:1 ,backgroundColor: darkMode? "#000" : "#fff"}}>
+              {/*Check if user is logged in or not*/}
+              <InitialLyout/> 
+            </SafeAreaView>
+          </SafeAreaProvider>
+      </ClerkAndConvexProvider>
+    </ThemeProvider>
   );
 }

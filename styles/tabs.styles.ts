@@ -57,5 +57,13 @@ export const styles = StyleSheet.create({
       fontSize: 20,
       fontWeight: "bold",
       marginTop: 10,
-    }
+    },
+    darkMode: {
+      backgroundColor: "#000",
+      color: "#fff",
+    },
+    lightMode: {
+      backgroundColor: "#fff",
+      color: "#000",
+    },
   });

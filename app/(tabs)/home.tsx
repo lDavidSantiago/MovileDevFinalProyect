@@ -1,9 +1,10 @@
-import { Modal, Text, View, TouchableOpacity} from "react-native";
+import { Modal, Text, View, TouchableOpacity, Button} from "react-native";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { styles } from "@/styles/tabs.styles";
 import { useState } from "react";
+import  CalendarOption  from "@/components/calendar";
 
 export default function Index() {
   // Estado para controlar si el modal está visible o no
@@ -24,10 +25,9 @@ export default function Index() {
 
         {/*  creacion botones  */}
         {elements.map((element) => (
-          <TouchableOpacity key={element.id}>
-            <Text style={styles.buttonText}>{element.type}</Text>
-
-            </TouchableOpacity>
+          <Text key={element.id}>
+            {element.type === "📆 Calendar" && <CalendarOption />}
+            </Text>
 
         ))}
 
@@ -43,7 +43,7 @@ export default function Index() {
               <Text style={styles.modalTitle}>Crear Nuevo Elemento</Text>
 
               <TouchableOpacity onPress={() => {
-                addNewElement("To-Do List " );
+                addNewElement("To-Do List" );
                 setModalVisible(false)}}>
                 <Text style={styles.optionText}>
                 📋 To-Do List 
@@ -51,7 +51,7 @@ export default function Index() {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => {
-                addNewElement("Calendar");
+                addNewElement("📆 Calendar" );
                 setModalVisible(false)}}>
                 <Text style={styles.optionText}>
                 📆 Calendar
