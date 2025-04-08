@@ -18,7 +18,7 @@ export default defineSchema({
         description: v.string(), // Description of the file
         content: v.string(), // Main content of the file
         type: v.string(), // Type of the file (e.g., "document", "folder")
-        authorId: v.id("users"), // Reference to the user who created the file
+        authorId: v.string(), // Reference to the user who created the file
         parentFileId: v.optional(v.id("notionFiles")), // Reference to the parent file (nullable for top-level files)
         order: v.number(), // Order of the file (e.g., for sorting)
         createdAt: v.number(), // Timestamp when the file was created

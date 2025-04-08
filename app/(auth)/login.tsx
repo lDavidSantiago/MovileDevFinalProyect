@@ -23,6 +23,7 @@ export default function Login() {
       if (setActive && createdSessionId) {
         setActive({ session: createdSessionId });
         // Al iniciar sesion el usuario es enviado a /home
+        
         router.replace("/(tabs)/home");
       }
     } catch (error) {

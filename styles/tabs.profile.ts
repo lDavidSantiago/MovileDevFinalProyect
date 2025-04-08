@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const styles = StyleSheet.create({
+ export const profileStyles = StyleSheet.create({
     /** Header */
     header: {
       flexDirection: 'row',
@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
       justifyContent: 'space-between',
       width: '100%',
       paddingHorizontal: 16,
+      
     },
     headerAction: {
       width: 40,

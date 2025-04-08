@@ -38,7 +38,7 @@ export const createNotionFile = mutation({
         // Create the new notion file
         const newFile = await ctx.db.insert("notionFiles", {
             ...args,
-            authorId: user._id,
+            authorId: user.clerkId,
             createdAt: now,
             updatedAt: now
         });
@@ -46,3 +46,14 @@ export const createNotionFile = mutation({
         return newFile;
     }
 })
+
+export const getNotionFilesByUserId = query({
+    args: { userId: v.string() },
+    handler: async (ctx, { userId }) => {
+        const files = await ctx.db
+            .query("notionFiles")
+            .withIndex("by_author_id", (q) => q.eq("authorId", userId))
+            .collect();
+        return files;
+    }
+});

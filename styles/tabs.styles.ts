@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
       flex: 1, //  Hace que el contenedor ocupe toda la pantalla
       justifyContent: "center", //  Centra el contenido verticalmente
       alignItems: "center", //  Centra el contenido horizontalmente
-      backgroundColor: "rgba(248, 245, 245, 0)", //  Color de fondo semitransparente
+      backgroundColor: "#252424" //  Color de fondo semitransparente
     },
   
     buttonText: {

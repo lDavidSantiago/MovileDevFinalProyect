@@ -13,8 +13,8 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as createPost from "../createPost.js";
 import type * as http from "../http.js";
+import type * as notionFiles from "../notionFiles.js";
 import type * as users from "../users.js";
 
 /**
@@ -26,8 +26,8 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  createPost: typeof createPost;
   http: typeof http;
+  notionFiles: typeof notionFiles;
   users: typeof users;
 }>;
 export declare const api: FilterApi<
