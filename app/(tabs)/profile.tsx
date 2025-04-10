@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import * as Linking from 'expo-linking'
 import {
-  StyleSheet,
   SafeAreaView,
   ScrollView,
   View,
@@ -12,12 +11,11 @@ import {
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { useClerk, useUser } from '@clerk/clerk-expo';
-import { Link, Redirect, router } from 'expo-router';
+import { router } from 'expo-router';
 import { profileStyles } from "@/styles/tabs.profile";
-import { DarkTheme } from '@react-navigation/native';
 
 export default function Example() {
-  const [form, setForm] = useState({
+  const [form] = useState({
     emailNotifications: true,
     pushNotifications: false,
     darkTheme: false,
@@ -40,9 +38,9 @@ export default function Example() {
       <View style={profileStyles.header}>
         <View style={profileStyles.headerAction}>
           <TouchableOpacity
+          activeOpacity={0.2}
             onPress={() => {
               router.replace("/(tabs)/home");
- 
             }}>
             <FeatherIcon
               color="#000"
@@ -50,19 +48,9 @@ export default function Example() {
               size={24} />
           </TouchableOpacity>
         </View>
-        <Text numberOfLines={1} style={profileStyles.headerTitle}>
-          Profile
-        </Text>
+        <Text numberOfLines={1} style={profileStyles.headerTitle}>Profile</Text>
         <View style={[profileStyles.headerAction, { alignItems: 'flex-end' }]}>
-          <TouchableOpacity
-            onPress={() => {
-              // handle onPress
-            }}>
-            <FeatherIcon
-              color="#000"
-              name="more-vertical"
-              size={24} />
-          </TouchableOpacity>
+
         </View>
       </View>
       <ScrollView contentContainerStyle={profileStyles.content}>

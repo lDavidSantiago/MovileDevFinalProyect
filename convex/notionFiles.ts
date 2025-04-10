@@ -9,7 +9,6 @@ export const createNotionFile = mutation({
         description: v.string(), // Description of the file
         content: v.string(), // Main content of the file
         type: v.string(), // Type of the file (e.g., "document", "folder")
-        parentFileId: v.optional(v.id("notionFiles")), // Reference to the parent file (nullable for top-level files)
         order: v.number(), // Order of the file (e.g., for sorting)
     },
     handler: async (ctx, args) => {
@@ -25,13 +24,7 @@ export const createNotionFile = mutation({
             throw new Error("User not found");
         }
 
-        // Validate parentFileId if provided
-        if (args.parentFileId) {
-            const parentFile = await ctx.db.get(args.parentFileId);
-            if (!parentFile) {
-                throw new Error("Invalid parentFileId: Parent file not found");
-            }
-        }
+        
 
         const now = Date.now();
         
@@ -55,5 +48,19 @@ export const getNotionFilesByUserId = query({
             .withIndex("by_author_id", (q) => q.eq("authorId", userId))
             .collect();
         return files;
-    }
+    } 
+});
+
+export const getNotionFilesByUserIdNullParent = query({
+    args: { userId: v.string() },
+    handler: async (ctx, { userId }) => {
+        const files = await ctx.db
+            .query("notionFiles")
+            .withIndex("by_author_id_order", q => q.eq("authorId", userId))
+            .order("asc")
+            .collect();
+        return files;
+    }     
+
+
 });

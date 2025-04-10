@@ -1,3 +1,4 @@
+import { StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import InitialLyout from "@/components/initialLayout";
 import ClerkAndConvexProvider from "@/providers/ClerkAndCovexProviders";
@@ -19,7 +20,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
         <ClerkAndConvexProvider>
-          <SafeAreaProvider>
+          <SafeAreaProvider style ={styles.container}>
             <SafeAreaView style={{ flex:1 ,backgroundColor: darkMode? "#000" : "#fff"}}>
               {/*Check if user is logged in or not*/}
               <InitialLyout/> 
@@ -29,3 +30,9 @@ export default function RootLayout() {
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container:{
+    flex:1,
+  }
+});

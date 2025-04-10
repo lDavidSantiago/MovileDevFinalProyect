@@ -19,12 +19,11 @@ export default defineSchema({
         content: v.string(), // Main content of the file
         type: v.string(), // Type of the file (e.g., "document", "folder")
         authorId: v.string(), // Reference to the user who created the file
-        parentFileId: v.optional(v.id("notionFiles")), // Reference to the parent file (nullable for top-level files)
         order: v.number(), // Order of the file (e.g., for sorting)
         createdAt: v.number(), // Timestamp when the file was created
         updatedAt: v.number(), // Timestamp when the file was last updated
       })
       .index("by_author_id", ["authorId"]) // Index for querying files by author
-      .index("by_parent_file_id", ["parentFileId"]) // Index for querying child files
+      .index("by_author_id_order", ["authorId", "order"]) // New index for sorting by order
 
 })
