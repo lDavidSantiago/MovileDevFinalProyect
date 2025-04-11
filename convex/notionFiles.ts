@@ -51,16 +51,19 @@ export const getNotionFilesByUserId = query({
     } 
 });
 
-export const getNotionFilesByUserIdNullParent = query({
-    args: { userId: v.string() },
-    handler: async (ctx, { userId }) => {
-        const files = await ctx.db
-            .query("notionFiles")
-            .withIndex("by_author_id_order", q => q.eq("authorId", userId))
-            .order("asc")
-            .collect();
-        return files;
-    }     
-
-
-});
+export const updateFileOrders = mutation({
+    args: {
+      updates: v.array(
+        v.object({
+          id: v.id("notionFiles"), // Assuming your table is called "notionFiles"
+          order: v.number()
+        })
+      )
+    },
+    handler: async (ctx, args) => {
+      // Process all updates in a single transaction
+      for (const update of args.updates) {
+        await ctx.db.patch(update.id, { order: update.order });
+      }
+    }
+  });

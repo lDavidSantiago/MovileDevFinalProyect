@@ -13,24 +13,24 @@ import React, { useCallback, useEffect, useState } from "react";
 export default function Index() {
   const { user } = useUser();
   const createNotionMutation = useMutation(api.notionFiles.createNotionFile);
+  const updateFileOrders = useMutation(api.notionFiles.updateFileOrders); // Move this to the top level
   const userId = user?.id?.toString() || "";
   const notes = useQuery(api.notionFiles.getNotionFilesByUserId, { userId });
-  const [data,setData] = useState<typeof notes>([]);
+  const [data, setData] = useState<typeof notes>([]);
+  const [sortedFiles, setSortedFiles] = useState<typeof notes>([]);
 
   useEffect(() =>{
-    if (notes){
-      setData(notes);
+    if (notes) {
+      setSortedFiles(notes);
     }
-  },[notes])
+  }, [notes])
   const handleCreateTestNotion = () => {
     if (!user) {
       alert("You need to be logged in to create a notion file");
       return;
-    }
-    
-    // Call the mutation with test data
+    }   
     createNotionMutation({
-      title: "Hola",
+      title: "Test 3",
       description: "This is a test description",
       content: "This is the content of the test notion file",
       type: "document",
@@ -50,42 +50,52 @@ export default function Index() {
   const renderItem = useCallback(
     ({ item, drag, isActive }: RenderItemParams<any>) => {
       return (
-        <TouchableOpacity disabled={isActive} onLongPress={drag} >
-          <Text>{item.title}</Text>
+        <TouchableOpacity disabled={isActive} onLongPress={drag} onPress={() => console.log(item)}>
+          <Text style={{fontSize: 20}}>{item.icon}{item.title}</Text>
         </TouchableOpacity>
       );
     },
     []
   );
+
+  const handleDragEnd = async (data: any[]) => {
+     // Update local state immediately for a smooth UI experience
+     setSortedFiles(data);
+  
+     // Create updates array
+     setTimeout(async () => {
+      try {
+        const updates = data.map((item, index) => ({
+          id: item._id,
+          order: index
+        }));
+        
+        await updateFileOrders({ updates });
+      } catch (error) {
+        console.error("Error updating order:", error);
+      }
+    }, 300); // Delay matches animation duration
+  }
   return (
     <View style={styles.container}>
-      {notes?.map((note) => (
-                <View key={note._id}>
-                    <Text>{note.icon} {note.title}</Text>
-                    <Text>{note.description}</Text>
-                </View>
-            ))}
         <TouchableOpacity onPress={() => console.log(router.replace("/(create)/createNotion"))}>
           <Text style={styles.buttonText}>Go To CreateNotion</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleCreateTestNotion}>  
-        <Text style={styles.buttonText}>Create Notion File</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log("Data: ", data)}>
-        <Text style={styles.buttonText}>Log Notes</Text>
-      </TouchableOpacity>
-      
+        <TouchableOpacity onPress={handleCreateTestNotion}>
+          <Text style={styles.buttonText}>Create Test Notion</Text>
+        </TouchableOpacity>
       <DraggableFlatList
-        data={data || []}
+        data={sortedFiles || []}
         containerStyle={{flex:1}}
-        onDragEnd={({ data }) => setData(data)}
+        onDragEnd={({ data }) => handleDragEnd(data)}
         keyExtractor={(item) => item._id}
         renderItem={renderItem}
+        activationDistance={1}
+        
       />
-            
-         
     </View>
   );
 }
+
 
 

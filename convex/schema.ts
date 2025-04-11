@@ -23,7 +23,7 @@ export default defineSchema({
         createdAt: v.number(), // Timestamp when the file was created
         updatedAt: v.number(), // Timestamp when the file was last updated
       })
-      .index("by_author_id", ["authorId"]) // Index for querying files by author
-      .index("by_author_id_order", ["authorId", "order"]) // New index for sorting by order
+      .index("by_author_id", ["authorId","order"]) // Index for querying files by author
+      .index("by_order", ["order"]),
 
 })

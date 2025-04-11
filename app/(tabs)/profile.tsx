@@ -15,11 +15,6 @@ import { router } from 'expo-router';
 import { profileStyles } from "@/styles/tabs.profile";
 
 export default function Example() {
-  const [form] = useState({
-    emailNotifications: true,
-    pushNotifications: false,
-    darkTheme: false,
-  });
   const {signOut} = useClerk();
   const handleSignOut = async () => {
     try {
@@ -29,10 +24,7 @@ export default function Example() {
       console.error(JSON.stringify(err, null, 2))
     }
   }
-  function test() {
-    console.log("test", form.darkTheme)
-  }
-  const { user } = useUser();
+  const {user} = useUser();
     return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
       <View style={profileStyles.header}>
@@ -182,9 +174,7 @@ export default function Example() {
                   handleSignOut()
                 }}
                 style={profileStyles.row}>
-                <Text style={[profileStyles.rowLabel, profileStyles.rowLabelLogout]}>
-                  Log Out
-                </Text>
+                <Text style={[profileStyles.rowLabel, profileStyles.rowLabelLogout]}>Log Out</Text>
               </TouchableOpacity>
             </View>
           </View>
