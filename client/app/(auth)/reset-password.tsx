@@ -32,7 +32,7 @@ export default function ResetPassword() {
       console.error(JSON.stringify(err, null, 2));
       router.replace("/sign-up");
     }
-  }, [isLoaded, emailAddress, signIn]);
+  }, [isLoaded, signIn, emailAddress, router]);
 
   const onVerifyPress = React.useCallback(async () => {
     if (!isLoaded) return;

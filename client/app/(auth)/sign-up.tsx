@@ -1,12 +1,10 @@
 import { ThemedText } from "@/components/ThemedText";
 import {
   isClerkAPIResponseError,
-  useSignIn,
   useSignUp,
 } from "@clerk/clerk-expo";
-import { Link, useRouter } from "expo-router";
-import { useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
+import { TouchableOpacity} from "react-native";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
 import { BodyScrollView } from "@/components/ui/BodyScrollView";
@@ -21,10 +19,9 @@ export default function SignUpScreen() {
   const [isSignedIn, setIsSignedIn] = React.useState<boolean>(false);
   const [error, setError] = React.useState<ClerkAPIError[]>([]);
   const [code, setCode] = React.useState<string>("");
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading] = React.useState<boolean>(false);
   const [pendingVerification, setPendingVerification] =
     React.useState<boolean>(false);
-  const [errors, setErrors] = React.useState<ClerkAPIError[]>([]);
 
   const onSignUpPress = async () => {
     //TODO : handle sign in
@@ -66,7 +63,7 @@ export default function SignUpScreen() {
         console.log("Verification failed", signUpAttempt.status);
       }
     } catch (e) {
-      if (isClerkAPIResponseError(e)) setErrors(e.errors);
+      if (isClerkAPIResponseError(e)) setError(e.errors);
       console.error(JSON.stringify(e, null, 2));
     }
   };
