@@ -4,7 +4,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Slot, Stack } from "expo-router";
+import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -26,6 +26,7 @@ if (!publisableKey) {
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
@@ -40,6 +41,7 @@ export default function RootLayout() {
   }
 
   return (
+    
     <ClerkProvider publishableKey={publisableKey} tokenCache={tokenCache}>
       <ClerkLoaded>
         <ThemeProvider

@@ -80,6 +80,7 @@ export default function SignInScreen() {
       // If sign in was successful, set the active session
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
+        console.log("Session ID:", createdSessionId);
         router.replace("/(index)");
       } else {
         // If there is no `createdSessionId`,

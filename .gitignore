@@ -30,9 +30,15 @@ yarn-error.*
 *.pem
 
 # local env files
+# filepath: c:\Users\lDavidSantiago\Documents\Code Proyects\Habitify\.gitignore
+# ...existing code...
 .env*.local
 .env
-.\client\.env
+client/.env # Changed from .\client\.env
+./vscode
+.vscode/
+# typescript
+# ...existing code...
 # typescript
 *.tsbuildinfo
 
