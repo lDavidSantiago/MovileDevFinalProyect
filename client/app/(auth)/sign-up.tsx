@@ -1,10 +1,7 @@
 import { ThemedText } from "@/components/ThemedText";
-import {
-  isClerkAPIResponseError,
-  useSignUp,
-} from "@clerk/clerk-expo";
+import { isClerkAPIResponseError, useSignUp } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
-import { TouchableOpacity} from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
 import { BodyScrollView } from "@/components/ui/BodyScrollView";
@@ -76,7 +73,7 @@ export default function SignUpScreen() {
           value={code}
           placeholder="Enter verification code"
           label={`Enter the verification code we sent to ${emailAddress}`}
-          keyboardType="email-address"
+          keyboardType="numeric"
           onChangeText={(code) => setCode(code)}
         />
         <Button

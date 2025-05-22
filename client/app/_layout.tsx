@@ -12,7 +12,9 @@ import "react-native-reanimated";
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { tokenCache } from "@/cache";
-
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -41,16 +43,24 @@ export default function RootLayout() {
   }
 
   return (
-    
     <ClerkProvider publishableKey={publisableKey} tokenCache={tokenCache}>
       <ClerkLoaded>
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Slot />
-          <StatusBar style="auto" />
+          <StatusBar style={colorScheme === "dark" ? "dark" : "light"} />
+          <SafeAreaView style={styles.container}>
+            <ActionSheetProvider>
+              <Slot />
+            </ActionSheetProvider>
+          </SafeAreaView>
         </ThemeProvider>
       </ClerkLoaded>
     </ClerkProvider>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

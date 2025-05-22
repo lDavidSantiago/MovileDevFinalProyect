@@ -47,9 +47,9 @@ export default function SignInScreen() {
       // * if User process is complete, set the session and redirect to home page
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
-        router.replace("/(index)");
+        router.replace("/(tabs)");
       }
-      // * if the statusisn't complete, log the signInAttempt object to see the status and errors
+      // * if the status isn't complete, log the signInAttempt object to see the status and errors
       else {
         console.log(JSON.stringify(signInAttempt, null, 2));
       }
@@ -81,7 +81,7 @@ export default function SignInScreen() {
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
         console.log("Session ID:", createdSessionId);
-        router.replace("/(index)");
+        router.replace("/(tabs)");
       } else {
         // If there is no `createdSessionId`,
         // there are missing requirements, such as MFA

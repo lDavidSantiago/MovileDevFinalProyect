@@ -7,41 +7,42 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@1.30.0";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 console.log("Hello from Functions!");
-const supabase = createClient(
-  supabaseUrl,
-  supabaseKey,
-);
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 serve(async (req: Request) => {
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
   }
-
   try {
     const { id, email_addresses, first_name, image_url } =
       (await req.json()).data;
     const email = email_addresses[0].email_address;
-    const { data, error } = await supabase.from("users").insert({
-      id,
-      email,
-      first_name,
-      image_url,
-    });
+    const username = email.split("@")[0];
+
+    const { data, error } = await supabase
+      .from("users")
+      .insert({ id, email, image_url, first_name, username });
+
     if (error) {
-      console.error("Error inserting user:", error);
-      return new Response(JSON.stringify({ error: "Failed to insert user" ,}), {
-        status: 500,
-      });
+      return new Response(JSON.stringify(error), { status: 400 });
     }
-    return new Response(JSON.stringify({ data }), { status: 200 });
-  } catch (error) {
-    console.error("Error parsing request:", error);
-    return new Response(JSON.stringify({ error: "Failed to parse request" }), {
+
+    return new Response(JSON.stringify(data), {
+      headers: { "Content-Type": "application/json" },
+      status: 201,
+    });
+  } catch (err: unknown) {
+    console.log(err);
+
+    const errorMessage = err instanceof Error
+      ? err.message
+      : "An unknown error occurred";
+    return new Response(JSON.stringify({ error: errorMessage }), {
+      headers: { "Content-Type": "application/json" },
       status: 400,
     });
   }
 });
-
-
