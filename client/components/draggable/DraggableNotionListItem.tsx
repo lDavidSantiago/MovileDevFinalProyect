@@ -7,6 +7,7 @@ import { RenderItemParams } from "react-native-draggable-flatlist";
 import { supabase } from "@/lib/supabaseClient";
 import LoadingTextAnimation from "../ui/animateDots";
 import { useActionSheet } from "@expo/react-native-action-sheet";
+import { Link } from "expo-router";
 interface DraggableNotionListItemProps
   extends Omit<RenderItemParams<NotionFile>, "getIndex"> {
   getData: () => Promise<void>;
@@ -131,37 +132,46 @@ function NotionFileItem({
   };
   return (
     <View>
-      <TouchableOpacity
-        style={styles.heading}
-        activeOpacity={0.8}
-        disabled={isActive}
-        onLongPress={drag}
+      <Link
+        asChild
+        push
+        href={{
+          pathname: "/(tabs)/new-notion",
+          params: { viewingFile: JSON.stringify(notionFile) },
+        }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Pressable onPress={() => SetIsOpen((value) => !value)}>
-            <Ionicons
-              name={isOpen ? "chevron-down" : "chevron-forward-outline"}
-              size={19}
-              style={{ marginRight: 12 }}
-              color={iconColor}
-            />
-          </Pressable>
-          <ThemedText type="defaultSemiBold">
-            {notionFile.icon}
-            {notionFile.title}
-          </ThemedText>
-        </View>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-          <Pressable onPress={() => onPress(notionFile.id)}>
-            <Ionicons
-              name={"ellipsis-horizontal"}
-              size={18}
-              color={iconColor}
-            />
-          </Pressable>
-          <Ionicons name={"add"} size={22} color={iconColor} />
-        </View>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.heading}
+          activeOpacity={0.8}
+          disabled={isActive}
+          onLongPress={drag}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Pressable onPress={() => SetIsOpen((value) => !value)}>
+              <Ionicons
+                name={isOpen ? "chevron-down" : "chevron-forward-outline"}
+                size={19}
+                style={{ marginRight: 12 }}
+                color={iconColor}
+              />
+            </Pressable>
+            <ThemedText type="defaultSemiBold">
+              {notionFile.icon}
+              {notionFile.title}
+            </ThemedText>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            <Pressable onPress={() => onPress(notionFile.id)}>
+              <Ionicons
+                name={"ellipsis-horizontal"}
+                size={18}
+                color={iconColor}
+              />
+            </Pressable>
+            <Ionicons name={"add"} size={22} color={iconColor} />
+          </View>
+        </TouchableOpacity>
+      </Link>
       {isOpen ? (
         <View style={styles.content}>
           <InnerNotionListItem parentId={notionFile.id} />

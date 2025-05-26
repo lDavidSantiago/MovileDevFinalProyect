@@ -16,6 +16,8 @@ import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/ThemedView";
 import { StyleSheet } from "react-native";
 import NotionButton from "@/components/navigation/NotionButton";
+import { useAuth } from "@clerk/clerk-expo";
+import { create } from "react-test-renderer";
 const defaultIcons = [
   "🚀",
   "👻",
@@ -57,8 +59,8 @@ const randomIcon = () =>
   defaultIcons[Math.floor(Math.random() * defaultIcons.length)];
 export default function NewNotionScreen() {
   const theme = useColorScheme();
+  const { userId, isSignedIn } = useAuth();
 
-  const isFocused = useIsFocused();
   const routeParams = useLocalSearchParams<{
     parentId?: string;
     viewingFile?: string;
@@ -92,45 +94,81 @@ export default function NewNotionScreen() {
   }, [viewingFile?.id]);
 
   const titleRef = useRef<TextInput>(null);
-  const [title, setTitle] = useState(viewingFile ? viewingFile.title : "");
-  const [text, setText] = useState(viewingFile ? viewingFile.text : "");
-  const [icon, setIcon] = useState(
-    viewingFile ? viewingFile.icon : randomIcon()
-  );
+  const [title, setTitle] = useState("");
+  const [text, setText] = useState("");
+  const [icon, setIcon] = useState(randomIcon());
   const backgroundColor = Colors[theme!].background as string;
   const textColor = Colors[theme!].text as string;
-  useEffect(() => {
-    if (titleRef.current) {
-      titleRef.current.focus();
-    }
-  }, [theme]);
+  const hasInitialized = useRef(false); // Declare hasInitialized using useRef
 
   function handleSaveNotionFile() {
-    //TODO
-  }
-  useEffect(() => {
-    if (isFocused) {
-      // When the screen is focused, initialize the state
+    if (!title) return;
+    const data = {
+      creator: userId,
+      title: title,
+      icon: icon ?? randomIcon(),
+      parentfileid: routeParams.parentId
+        ? Number(routeParams.parentId)
+        : viewingFile
+        ? viewingFile.parentfileid
+        : null,
+      created_at: new Date().toISOString(),
+      last_edit: new Date().toISOString(),
+      text: "",
+      order: 0,
+    };
+
+    try {
       if (viewingFile) {
-        setTitle(viewingFile.title);
-        setText(viewingFile.text);
-        setIcon(viewingFile.icon);
+        console.log("Updating file:", viewingFile.id);
+        supabase
+          .from("notionfile")
+          .update({
+            title: title,
+            icon: icon,
+            text: text,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", viewingFile.id)
+          .then(() => {
+            router.setParams({ parentId: "", viewingFile: "" });
+            if (router.canDismiss()) {
+              router.dismissAll();
+            }
+            router.replace("/(tabs)");
+          });
       } else {
-        setTitle("");
-        setText("");
-        setIcon(randomIcon());
+        console.log("Inserting new file:", data);
+        supabase
+          .from("notionfile")
+          .insert([data])
+          .then((response) => {
+            if (response.error) {
+              console.error("Supabase insert error:", response.error);
+            } else {
+              console.log("Data inserted successfully:", response.data);
+              router.setParams({ parentId: "", viewingFile: "" });
+              if (router.canDismiss()) {
+                router.dismissAll();
+              }
+              router.replace("/(tabs)");
+            }
+          });
       }
-      if (titleRef.current) {
-        titleRef.current.focus();
-      }
-    } else {
-      // When the screen is not focused, reset the state
+
       setTitle("");
       setText("");
       setIcon(randomIcon());
-      setParentFile(null);
+      router.setParams({ parentId: "", viewingFile: "" });
+      if (router.canDismiss()) {
+        router.dismissAll();
+      }
+      router.replace("/(tabs)");
+    } catch (error) {
+      console.error("Error saving file:", error);
     }
-  }, [isFocused, viewingFile]);
+  }
+
   return (
     <>
       <Stack.Screen
@@ -147,46 +185,63 @@ export default function NewNotionScreen() {
                   borderRadius: 6,
                 }}
               />
-            ) : null,
+            ) : (
+              <NotionButton
+                onPress={() => {
+                  router.setParams({ parentId: "", viewingFile: "" });
+                  if (router.canDismiss()) {
+                    router.dismissAll();
+                  }
+                  router.replace("/(tabs)");
+                }}
+                title=""
+                iconName="close"
+                containerStyle={{
+                  backgroundColor: Colors[theme!].backgroundSecondary,
+                  paddingRight: 20,
+                  borderRadius: 6,
+                }}
+              />
+            ),
         }}
       />
-      <ThemedView style={{ flex: 1 }}>
-        <ScrollView keyboardShouldPersistTaps="always">
-          <ThemedView style={styles.container}></ThemedView>
-          {icon && (
-            <Text style={{ fontSize: 60, marginBottom: 6, paddingLeft: 15 }}>
-              {icon}
-            </Text>
-          )}
-          <TextInput
-            ref={titleRef}
-            placeholder="Untitled"
-            value={title}
-            onChangeText={setTitle}
-            style={{
-              fontSize: 32,
-              fontWeight: "bold",
-              color: textColor,
-              padding: 10,
-            }}
-          />
-          <TextInput
-            placeholder="Type here..."
-            value={text}
-            onChangeText={setText}
-            multiline
-            style={{
-              fontSize: 18,
-              color: textColor,
-              padding: 10,
-              backgroundColor: backgroundColor,
-              borderRadius: 8,
-              marginBottom: 10,
-              paddingLeft: 15,
-            }}
-          />
-        </ScrollView>
-      </ThemedView>
+        <ThemedView style={{ flex: 1 }}>
+          <ScrollView keyboardShouldPersistTaps="always">
+            <ThemedView style={styles.container}></ThemedView>
+            {icon && (
+              <Text style={{ fontSize: 60, marginBottom: 6, paddingLeft: 15 }}>
+                {icon}
+              </Text>
+            )}
+            <TextInput
+              ref={titleRef}
+              placeholder="Untitled"
+              value={title}
+              onChangeText={setTitle}
+              style={{
+                fontSize: 32,
+                fontWeight: "bold",
+                color: textColor,
+                padding: 10,
+              }}
+            />
+            <TextInput
+              placeholder="Type here..."
+              value={text}
+              onChangeText={setText}
+              multiline
+              style={{
+                fontSize: 18,
+                color: textColor,
+                padding: 10,
+                backgroundColor: backgroundColor,
+                borderRadius: 8,
+                marginBottom: 10,
+                paddingLeft: 15,
+              }}
+            />
+          </ScrollView>
+        </ThemedView>
     </>
   );
 }

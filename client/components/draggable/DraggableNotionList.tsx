@@ -21,24 +21,25 @@ export interface NotionFile {
 export default function DraggableNotionList() {
   const [datos, setData] = useState<NotionFile[]>([]);
   const [sortedFiles, setSortedFiles] = useState<NotionFile[]>([]);
-  const { userId } = useAuth();
+  const { userId, isSignedIn } = useAuth();
 
   async function getData() {
-    const { data, error } = await supabase
-      .from("notionfile")
-      .select("*")
-      .eq("creator", userId) // Use the userId from useAuth
-      .is("parentfileid", null)
-      .order("order", { ascending: true });
-    if (error) {
-      console.error("Error fetching data:", error);
-    } else {
-      if (data && data.length > 0) {
-        console.log("Data fetched successfully:aaaa", data);
-        setData(data);
+    if (isSignedIn && userId) {
+      const { data, error } = await supabase
+        .from("notionfile")
+        .select("*")
+        .eq("creator", userId) // Use the userId from useAuth
+        .is("parentfileid", null)
+        .order("order", { ascending: true });
+      if (error) {
+        console.error("Error fetching data:", error);
       } else {
-        console.log("No data found");
-        setData([]); // Set data to an empty array if no data is returned
+        if (data && data.length > 0) {
+          setData(data);
+        } else {
+          console.log("No data found");
+          setData([]); // Set data to an empty array if no data is returned
+        }
       }
     }
   }

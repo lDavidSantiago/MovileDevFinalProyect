@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Tabs } from "expo-router";
-import React from "react";
+import React, { ReactNode } from "react";
 import { Platform } from "react-native";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { HapticTab } from "@/components/HapticTab";
@@ -7,6 +8,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
