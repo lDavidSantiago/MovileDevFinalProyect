@@ -16,15 +16,7 @@ import AuthModal from "@/components/AuthModal";
 export default function HomeScreen() {
   const { top } = useSafeAreaInsets();
   const { signOut } = useAuth();
-  const handleLogout = async () => {
-    console.log("Attempting to log out..."); // <--- AÑADE ESTO
-    try {
-      await signOut();
-      console.log("Usuario desconectado exitosamente");
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
-  };
+
   const showModal = async (type: ModalType) => {
     setAuthType(type);
     bottomSheetModal.current?.present();
@@ -133,26 +125,7 @@ export default function HomeScreen() {
               Sign Up
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.btn,
-              {
-                backgroundColor: "#92E3A9",
-              },
-            ]}
-            onPress={() => handleLogout()}
-          >
-            <Text
-              style={[
-                styles.textBtn,
-                {
-                  color: "black",
-                },
-              ]}
-            >
-              Log out?
-            </Text>
-          </TouchableOpacity>
+
           <Text style={styles.description}>
             By signing up, you agree to our{" "}
             <Text style={styles.link} onPress={openlink}>
