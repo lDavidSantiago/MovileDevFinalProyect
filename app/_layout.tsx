@@ -7,6 +7,7 @@ import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { SupabaseProvider } from "@/context/SupabaseContext";
 import { useRouter, useSegments, Stack } from "expo-router";
 import React, { useEffect } from "react";
+import { ActivityIndicator, View } from "react-native";
 const CLERK_PUBLISHABLE_KEY = process.env.CLERK_PUBLISHABLE_KEY as string;
 
 const InitialLayout = () => {
@@ -30,7 +31,14 @@ const InitialLayout = () => {
       // If the user is not signed in and not in the auth group, redirect to the auth page
       router.replace("/");
     }
-  }, [isSignedIn, isLoaded, segments]);
+  }, [isSignedIn, isLoaded, segments, router]);
+  if (!isLoaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size={"large"} color="#0000ff" />
+      </View>
+    );
+  }
   return (
     <SupabaseProvider>
       <Stack>
