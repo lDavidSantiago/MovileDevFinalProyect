@@ -75,13 +75,14 @@ const Layout = () => {
         name="new-board"
         options={{
           headerShown: false,
-          presentation: "transparentModal",
+          presentation: "modal",
         }}
       />
       <Stack.Screen
         name="templates"
         options={{
           title: "Start with a template",
+
           headerRight: () => (
             <TouchableOpacity
               onPress={() => router.back()}
@@ -90,7 +91,7 @@ const Layout = () => {
               <Ionicons name="close" size={16} color="black" />
             </TouchableOpacity>
           ),
-          presentation: "fullScreenModal",
+          presentation: "modal",
         }}
       />
     </Stack>

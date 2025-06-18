@@ -18,9 +18,7 @@ const InitialLayout = () => {
   useEffect(() => {
     if (!isLoaded) return;
     const inAuthGroup = segments[0] === "(auth)";
-    console.log("Segments:", segments);
-    console.log("isSignedIn:", isSignedIn);
-    console.log("inAuthGroup:", inAuthGroup);
+
     if (isSignedIn && !inAuthGroup) {
       // If the user is signed in and in the auth group, redirect to the home page
       console.log(

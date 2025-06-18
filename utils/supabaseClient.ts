@@ -16,14 +16,12 @@ function createClerkSupabaseClient() {
   return createClient(supabaseUrl, supabaseAnonKey, {
     global: {
       fetch: async (url, options = {}) => {
-        console.log("Supabase client initialized with URL:", url);
+        console.log("Supabase client initialized ");
         const clerkToken = await window.Clerk?.session?.getToken?.({
           template: "supabase",
         });
-        //Constructing the headers with the token
         const headers = new Headers(options?.headers);
         headers.set("Authorization", `Bearer ${clerkToken}`);
-        console.log("Supabase client initialized with URL:", url);
 
         return fetch(url, {
           ...options,

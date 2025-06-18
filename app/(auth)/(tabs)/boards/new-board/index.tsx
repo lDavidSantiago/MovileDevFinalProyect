@@ -1,13 +1,34 @@
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
-import React, { useState } from "react";
-import { Link, Stack, useRouter } from "expo-router";
-import { StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  StyleSheet,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { Link, Stack, useGlobalSearchParams, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
+import { DEFAULT_COLOR } from "./color-select";
+import { useSupabase } from "@/context/SupabaseContext";
+
 const Page = () => {
+  const { createBoard } = useSupabase();
   const [boardName, setBoardName] = useState("");
   const router = useRouter();
+  const { bg } = useGlobalSearchParams<{ bg?: string }>();
+  const [selectedColor, setSelectedColor] = useState(DEFAULT_COLOR);
+  useEffect(() => {
+    console.log("Bg Changed to: ", bg);
+    if (bg) {
+      setSelectedColor(bg);
+    }
+  }, [bg]);
+  const onCreateBoard = async () => {
+    await createBoard!(boardName, selectedColor);
+    router.dismiss();
+  };
 
-  const onCreateBoard = async () => {};
   return (
     <View style={{ marginVertical: 10 }}>
       <Stack.Screen
@@ -37,7 +58,15 @@ const Page = () => {
         placeholder="New Board"
         autoFocus
       />
-      <Link href="/(auth)/(tabs)/boards/new-board/color-select">Open Page</Link>
+      <Link href="/(auth)/(tabs)/boards/new-board/color-select" asChild>
+        <TouchableOpacity style={styles.btnItem}>
+          <Text style={styles.btnItemText}>Background</Text>
+          <View
+            style={[styles.colorPreview, { backgroundColor: selectedColor }]}
+          />
+          <Ionicons name="chevron-forward" size={22} color={Colors.grey} />
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 };
@@ -61,6 +90,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     fontSize: 16,
     marginBottom: 32,
+  },
+  btnItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
+    backgroundColor: "white",
+  },
+  btnItemText: {
+    fontSize: 16,
+    flex: 1,
+  },
+  colorPreview: {
+    width: 24,
+    height: 24,
+    borderRadius: 4,
   },
 });
 

@@ -91,7 +91,7 @@ export const SupabaseProvider = ({ children }: any) => {
   const getBoards = async () => {
     const { data } = await client
       .from(USER_BOARDS_TABLE)
-      .select(`boards ( title, id, background )`)
+      .select(`boards ( title, id, background,creator, created_at )`)
       .eq("user_id", userId);
     const boards = data?.map((b: any) => b.boards);
 
