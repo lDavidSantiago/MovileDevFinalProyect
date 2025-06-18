@@ -1,13 +1,14 @@
-import { ActionSheetProvider } from "@expo/react-native-action-sheet";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import "react-native-reanimated";
-import { StatusBar } from "expo-status-bar";
+import { SupabaseProvider } from "@/context/SupabaseContext";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
-import { SupabaseProvider } from "@/context/SupabaseContext";
-import { useRouter, useSegments, Stack } from "expo-router";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { Stack, useRouter, useSegments } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import "react-native-reanimated";
+
 const CLERK_PUBLISHABLE_KEY = process.env.CLERK_PUBLISHABLE_KEY as string;
 
 const InitialLayout = () => {

@@ -1,16 +1,16 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  RefreshControl,
-  TouchableOpacity,
-} from "react-native";
-import React, { useCallback, useState } from "react";
+import { Colors } from "@/constants/Colors";
 import { useSupabase } from "@/context/SupabaseContext";
 import { Board } from "@/types/enums";
 import { Link, useFocusEffect } from "expo-router";
-import { Colors } from "@/constants/Colors";
+import React, { useCallback, useState } from "react";
+import {
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const Page = () => {
   const { getBoards } = useSupabase();
@@ -29,7 +29,7 @@ const Page = () => {
   const ListItem = ({ item }: { item: Board }) => (
     <Link
       href={{
-        pathname: "/(auth)/(tabs)/boards/[id]",
+        pathname: "/(auth)/board/[id]",
         params: { id: item.id, bg: item.background },
       }}
       key={item.id}

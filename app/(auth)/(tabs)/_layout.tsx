@@ -1,10 +1,14 @@
 import { Colors } from "@/constants/Colors";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { Image } from "react-native";
+import { useNavigationState } from "@react-navigation/native";
+import { Tabs } from "expo-router";
 
 const Layout = () => {
+  const state = useNavigationState((state) => state);
+  const currentRoute = state.routes[state.index];
+
+  const hideTabBar = currentRoute?.name?.includes("boards/[id]");
   return (
     <Tabs
       screenOptions={{
@@ -15,6 +19,7 @@ const Layout = () => {
         headerTitleStyle: {
           color: "white",
         },
+        tabBarStyle: hideTabBar ? { display: "none" } : {},
       }}
     >
       <Tabs.Screen

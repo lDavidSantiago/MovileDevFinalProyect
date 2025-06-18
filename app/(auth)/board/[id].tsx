@@ -1,3 +1,4 @@
+import BoardArea from "@/components/Board/BoardArea";
 import { Colors } from "@/constants/Colors";
 import { useSupabase } from "@/context/SupabaseContext";
 import { Board } from "@/types/enums";
@@ -70,7 +71,6 @@ const Page = () => {
 
   return (
     <View style={{ backgroundColor: bg, flex: 1, paddingTop: headerHeight }}>
-      <Text>Page</Text>
       <Stack.Screen
         options={{
           title: board?.title,
@@ -78,6 +78,7 @@ const Page = () => {
           header: CustomHeader,
         }}
       />
+      {board && <BoardArea board={board} />}
     </View>
   );
 };

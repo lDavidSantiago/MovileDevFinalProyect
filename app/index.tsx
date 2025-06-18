@@ -125,7 +125,7 @@ export default function HomeScreen() {
               Sign Up
             </Text>
           </TouchableOpacity>
-
+                
           <Text style={styles.description}>
             By signing up, you agree to our{" "}
             <Text style={styles.link} onPress={openlink}>
