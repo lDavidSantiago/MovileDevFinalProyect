@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/Colors";
 import { useSupabase } from "@/context/SupabaseContext";
 import { Board, TaskList, TaskListFake } from "@/types/enums";
 import React, { useEffect, useRef, useState } from "react";
@@ -15,6 +16,7 @@ import Carousel, {
 } from "react-native-reanimated-carousel"; // Ensure you have installed react-native-reanimated-carousel
 import { SafeAreaView } from "react-native-safe-area-context";
 import ListStart from "./ListStart";
+import ViewList from "./ViewList";
 
 export interface BoardAreaProps {
   board?: Board;
@@ -64,37 +66,48 @@ const BoardArea = ({ board }: BoardAreaProps) => {
           loop={false}
           onProgressChange={progress}
           renderItem={({ index, item }: any) => (
-            <View key={index}>
-              {item.id ? (
-                <Text>{item.title}</Text>
-              ) : (
-                <View style={{ paddingTop: 20, paddingHorizontal: 30 }}>
-                  {startListActive ? (
+            <>
+              {item.id && (
+                <ViewList
+                  key={index}
+                  taskList={item}
+                  // onDelete={() => onListDeleted(item.id)}
+                />
+              )}
+              {item.id === undefined && (
+                <View
+                  key={index}
+                  style={{ paddingTop: 20, paddingHorizontal: 30 }}
+                >
+                  {!startListActive && (
+                    <TouchableOpacity
+                      onPress={() => setStartListActive(true)}
+                      style={styles.listAddButton}
+                    >
+                      <Text style={{ color: Colors.fontLight, fontSize: 18 }}>
+                        Add list
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {startListActive && (
                     <ListStart
                       onCancel={() => setStartListActive(false)}
                       onSave={onSaveNewList}
                     />
-                  ) : (
-                    <TouchableOpacity
-                      style={styles.listAddButton}
-                      onPress={() => setStartListActive(true)}
-                    >
-                      <Text style={{}}>Add list</Text>
-                    </TouchableOpacity>
                   )}
                 </View>
               )}
-            </View>
+            </>
           )}
         />
       </SafeAreaView>
       <View style={{ marginBottom: 40 }}>
-        {/* Add bottom margin */}
         <Pagination.Basic
           progress={progress}
           data={data}
           dotStyle={{ backgroundColor: "#ffffff5c", borderRadius: 40 }}
-          size={8}
+          size={10}
           activeDotStyle={{ backgroundColor: "#fff" }}
           containerStyle={{ gap: 10, marginTop: 10 }}
           onPress={onPressPagination}
