@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import BoardArea from "@/components/Board/BoardArea";
 import { Colors } from "@/constants/Colors";
 import { useSupabase } from "@/context/SupabaseContext";
@@ -57,7 +58,13 @@ const Page = () => {
               color={Colors.fontLight}
             />
           </TouchableOpacity>
-          {/* <Link href={``}> */}
+          <Link
+            href={{
+              pathname: "/(auth)/board/settings",
+              params: { id: id },
+            }}
+            asChild
+          >
             <TouchableOpacity onPress={() => {}}>
               <MaterialCommunityIcons
                 name="dots-horizontal"
@@ -65,7 +72,7 @@ const Page = () => {
                 color={Colors.fontLight}
               />
             </TouchableOpacity>
-          {/* </Link> */}
+          </Link>
         </View>
       </View>
     </BlurView>
