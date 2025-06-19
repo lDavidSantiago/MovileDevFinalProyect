@@ -9,6 +9,7 @@ import {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { DefaultTheme } from "@react-navigation/native";
+import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import * as Haptics from "expo-haptics";
 import React, { useCallback, useEffect, useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -35,6 +36,14 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
     ),
     []
   );
+  const {
+    deleteBoardList,
+    updateBoardList,
+    getListCards,
+    addListCard,
+    updateCard,
+    getRealtimeCardSubscription,
+  } = useSupabase();
   const [listName, setListName] = useState(taskList.title);
   const bottomSheetRef = React.useRef<BottomSheetModal>(null);
   const [isAdding, setIsAdding] = useState(Boolean);
@@ -42,7 +51,40 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   useEffect(() => {
     loadListTasks();
+    const subscription = getRealtimeCardSubscription!(
+      taskList.id,
+      handleRealtimeChanges
+    );
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
+  const handleRealtimeChanges = (
+    update: RealtimePostgresChangesPayload<any>
+  ) => {
+    const record = update.new?.id ? update.new : update.old;
+    const events = update.eventType;
+    if (!record) return;
+    if (events === "INSERT") {
+      setTasks((prev) => [...prev, record]);
+    } else if (events === "UPDATE") {
+      setTasks((prev) => {
+        return prev
+          .map((task) => {
+            if (task.id === record.id) {
+              return record;
+            }
+            return task;
+          })
+          .filter((task) => !task.done)
+          .sort((a, b) => a.position - b.position);
+      });
+    } else if (events === "DELETE") {
+      setTasks((prev) => prev.filter((item) => item.id !== record.id));
+    } else {
+      console.log("Unhandled event type:", events);
+    }
+  };
 
   const onAddCard = async () => {
     const { data } = await addListCard!(
@@ -54,16 +96,9 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
     console.log("New Task Added:", data);
     setIsAdding(false);
     setNewTask("");
-    setTasks([...tasks, data]);
+    // setTasks([...tasks, data]);
   };
   const snapPoints = React.useMemo(() => ["40%"], []);
-  const {
-    deleteBoardList,
-    updateBoardList,
-    getListCards,
-    addListCard,
-    updateCard,
-  } = useSupabase();
 
   const loadListTasks = async () => {
     const tasks = await getListCards!(taskList.id);
@@ -78,16 +113,14 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
     onDelete?.();
   };
   const onTaskDropped = async (params: DragEndParams<Task>) => {
-    console.log("Task Dropped:", params);
     const newData = params.data.map((item, index) => {
       return { ...item, position: index };
     });
     setTasks(newData);
 
     newData.forEach(async (item) => {
-      await updateCard!(item)
+      await updateCard!(item);
     });
-
   };
   return (
     <BottomSheetModalProvider>
@@ -107,7 +140,7 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
           <DraggableFlatList
             data={tasks}
             renderItem={ListItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => `${item.id}`}
             contentContainerStyle={{ gap: 6 }}
             containerStyle={{
               paddingBottom: 4,

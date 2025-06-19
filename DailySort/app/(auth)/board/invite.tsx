@@ -4,7 +4,7 @@ import { User } from "@/types/enums";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { DefaultTheme } from "@react-navigation/native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -21,12 +21,12 @@ const InvitePage = () => {
   const [userList, setUserList] = useState<User[]>([]);
   const headerHeight = useHeaderHeight();
 
-  const onSearchUser = useCallback(async () => {
+  const onSearchUser = async () => {
     console.log("ADDIDNG USER: ", search);
     const users = await findUsers!(search);
     setUserList(users);
     console.log("FOUND USERS: ", users);
-  }, [findUsers, search]);
+  };
   const onAddUser = async (user: User) => {
     await addUserToBoard!(id, user.id);
     router.dismiss();
@@ -50,23 +50,25 @@ const InvitePage = () => {
           },
         }}
       />
-      <TouchableOpacity onPress={() => console.log(onSearchUser())}>
-        <Text>TEST</Text>
-      </TouchableOpacity>
-      <FlatList
-        data={userList}
-        keyExtractor={(item) => item.id}
-        style={{ marginTop: 60 + headerHeight }}
-        contentContainerStyle={{ gap: 8 }}
-        renderItem={(item) => (
-          <UserListItem
-            element={item}
-            onPress={() => {
-              onAddUser;
-            }}
-          />
-        )}
-      />
+      <View>
+        <TouchableOpacity onPress={() => console.log(onSearchUser())}>
+          <Text>TEST</Text>
+        </TouchableOpacity>
+        <FlatList
+          data={userList}
+          keyExtractor={(item) => item.id}
+          style={{ marginTop: 60 + headerHeight }}
+          contentContainerStyle={{ gap: 8 }}
+          renderItem={(item) => (
+            <UserListItem
+              element={item}
+              onPress={() => {
+                onAddUser(item.item);
+              }}
+            />
+          )}
+        />
+      </View>
     </View>
   );
 };
