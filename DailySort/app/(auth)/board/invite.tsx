@@ -1,4 +1,5 @@
 import UserListItem from "@/components/Board/UserListItem";
+import { Colors } from "@/constants/Colors";
 import { useSupabase } from "@/context/SupabaseContext";
 import { User } from "@/types/enums";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -51,8 +52,13 @@ const InvitePage = () => {
         }}
       />
       <View>
-        <TouchableOpacity onPress={() => console.log(onSearchUser())}>
-          <Text>TEST</Text>
+        <TouchableOpacity
+          style={customStyles.fullBtn}
+          onPress={() => console.log(onSearchUser())}
+        >
+          <Text style={{ fontSize: 16, color: Colors.fontLight }}>
+            SEARCH USER
+          </Text>
         </TouchableOpacity>
         <FlatList
           data={userList}
@@ -99,5 +105,14 @@ const customStyles = StyleSheet.create({
   doneButtonText: {
     color: "white",
     fontWeight: "bold",
+  },
+  fullBtn: {
+    backgroundColor: Colors.blue,
+    padding: 8,
+    marginLeft: 32,
+    marginRight: 16,
+    marginTop: 8,
+    borderRadius: 6,
+    alignItems: "center",
   },
 });

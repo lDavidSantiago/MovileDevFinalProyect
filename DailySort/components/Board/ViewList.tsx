@@ -2,6 +2,7 @@
 import { Colors } from "@/constants/Colors";
 import { useSupabase } from "@/context/SupabaseContext";
 import { Task, TaskList } from "@/types/enums";
+import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   BottomSheetBackdrop,
@@ -10,9 +11,9 @@ import {
 } from "@gorhom/bottom-sheet";
 import { DefaultTheme } from "@react-navigation/native";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
+import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
 import React, { useCallback, useEffect, useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DraggableFlatList, {
@@ -20,8 +21,6 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import { TextInput } from "react-native-gesture-handler";
 import ListItem from "./ListItem";
-import { useAuth } from "@clerk/clerk-expo";
-
 
 export interface ViewListProps {
   taskList: TaskList;
@@ -54,18 +53,21 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
   const [isAdding, setIsAdding] = useState(Boolean);
   const [newTask, setNewTask] = useState("");
   const [tasks, setTasks] = useState<Task[]>([]);
-  const {userId} = useAuth();
+  const { userId } = useAuth();
   const { uploadFile } = useSupabase();
   useEffect(() => {
     loadListTasks();
+
     const subscription = getRealtimeCardSubscription!(
       taskList.id,
       handleRealtimeChanges
     );
+
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [taskList.id]);
+
   const handleRealtimeChanges = (
     update: RealtimePostgresChangesPayload<any>
   ) => {
@@ -73,6 +75,7 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
     const events = update.eventType;
     if (!record) return;
     if (events === "INSERT") {
+      console.log("Insertando");
       setTasks((prev) => [...prev, record]);
     } else if (events === "UPDATE") {
       setTasks((prev) => {
@@ -133,7 +136,7 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
   /////////////////////////////////////////
   /////////////////////////////////////////
   /////////////////////////////////////////
-  /////////////////////////////////////////
+  //////////////////////////////////////
   const onSelectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -143,15 +146,25 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
     });
     if (!result.canceled) {
       const img = result.assets[0];
-      const base64 = await FileSystem.readAsStringAsync(img.uri, { encoding: "base64" });
-      const fileName = `${new Date().getTime()}-${userId}.${img.type === 'image' ? 'png' : 'mp4'}`;
+      const base64 = await FileSystem.readAsStringAsync(img.uri, {
+        encoding: "base64",
+      });
+      const fileName = `${new Date().getTime()}-${userId}.${
+        img.type === "image" ? "png" : "mp4"
+      }`;
       const filePath = `${taskList.board_id}/${fileName}`;
-      const contentType = img.type === 'image' ? 'image/png' : 'video/mp4';
+      const contentType = img.type === "image" ? "image/png" : "video/mp4";
       const storagePath = await uploadFile!(filePath, base64, contentType);
-      console.log('Fuap ~ onSelectImage ~ storagePath:', storagePath);
+      console.log("Fuap ~ onSelectImage ~ storagePath:", storagePath);
 
-      if (storagePath){
-        addListCard!(taskList.id, taskList.board_id, fileName, tasks.length, storagePath)
+      if (storagePath) {
+        addListCard!(
+          taskList.id,
+          taskList.board_id,
+          fileName,
+          tasks.length,
+          storagePath
+        );
       }
     }
   };
@@ -213,7 +226,7 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
                   <Ionicons name="add" size={14} />
                   <Text style={{ fontSize: 13 }}>Add card</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress = {onSelectImage}> 
+                <TouchableOpacity onPress={onSelectImage}>
                   <Ionicons name="image-outline" size={18} />
                 </TouchableOpacity>
               </>
