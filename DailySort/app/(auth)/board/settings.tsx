@@ -1,17 +1,26 @@
+import UserListItem from "@/components/Board/UserListItem";
 import { Colors } from "@/constants/Colors";
 import { useSupabase } from "@/context/SupabaseContext";
-import { Board } from "@/types/enums";
+import { Board, User } from "@/types/enums";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 const Page = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getBoardInfo, updateBoard, deleteBoard } = useSupabase();
+  const { getBoardInfo, updateBoard, deleteBoard, getBoardMember } =
+    useSupabase();
   const router = useRouter();
   const [board, setBoard] = useState<Board>();
+  const [members, setMembers] = useState<User[]>([]);
   useEffect(() => {
     if (!id) return;
     loadInfo();
@@ -20,6 +29,10 @@ const Page = () => {
   const loadInfo = async () => {
     const data = await getBoardInfo!(id);
     setBoard(data);
+
+    const member = await getBoardMember!(id);
+    console.log("Members:", member);
+    setMembers(member);
   };
   const onUpdateBoardInfo = async () => {
     const updated = await updateBoard!(board!);
@@ -59,7 +72,14 @@ const Page = () => {
               Members
             </Text>
           </View>
-          {/* Add a button to manage members */}
+          <FlatList
+            data={members}
+            keyExtractor={(item) => item.id}
+            renderItem={(item) => (
+              <UserListItem element={item} onPress={() => {}} />
+            )}
+          />
+
           <Link
             href={{
               pathname: "/(auth)/board/invite",
@@ -68,7 +88,9 @@ const Page = () => {
             asChild
           >
             <TouchableOpacity style={styles.fullBtn}>
-              <Text style={{fontSize:16,color:Colors.fontLight}}>Manage Members</Text>
+              <Text style={{ fontSize: 16, color: Colors.fontLight }}>
+                Manage Members
+              </Text>
             </TouchableOpacity>
           </Link>
         </View>

@@ -67,7 +67,6 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
 
   const loadListTasks = async () => {
     const tasks = await getListCards!(taskList.id);
-    console.log("Loaded Tasks for List:", tasks);
     setTasks(tasks);
   };
   const onUpdateTaskList = async () => {
