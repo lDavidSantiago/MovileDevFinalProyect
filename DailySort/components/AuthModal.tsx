@@ -95,19 +95,12 @@ const AuthModal = ({ authType }: AuthModalProps) => {
         if (createdSessionId) {
           setActive!({ session: createdSessionId });
         }
-      } catch (err) {
-      }
+      } catch (err) {}
     }
   };
 
   return (
     <BottomSheetView style={[styles.modalContainer]}>
-      <TouchableOpacity style={styles.modalBtn}>
-        <Ionicons name="mail-outline" size={20} />
-        <Text style={styles.btnText}>
-          {authType === ModalType.Login ? "Log in" : "Sign up"} with Email
-        </Text>
-      </TouchableOpacity>
       {LOGIN_OPTIONS.map((option, index) => (
         <TouchableOpacity
           key={index}
