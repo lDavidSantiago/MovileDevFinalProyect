@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect } from "react";
 import { client } from "@/utils/supabaseClient";
 import { useAuth } from "@clerk/clerk-expo";
-import { createContext, useContext, useEffect } from "react";
-//import { decode } from "base64-arraybuffer";
+import { decode } from "base64-arraybuffer";
+
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
+import { Board, Task, TaskList } from "@/types/enums";
 
 
 export const BOARDS_TABLE = "boards";

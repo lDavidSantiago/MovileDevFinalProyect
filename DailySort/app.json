@@ -16,7 +16,10 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.DailySort"
+      "package": "com.anonymous.DailySort",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -47,6 +50,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a5d56405-3353-462a-aa78-82fb2ced0c14"
+      }
+    },
+    "owner": "williamuv"
   }
 }
