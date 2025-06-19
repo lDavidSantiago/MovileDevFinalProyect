@@ -1,7 +1,7 @@
-import { Board, Task, TaskList } from "@/types/enums";
+import { createContext, useContext, useEffect } from "react";
 import { client } from "@/utils/supabaseClient";
 import { useAuth } from "@clerk/clerk-expo";
-import { createContext, useContext, useEffect } from "react";
+import { Board, Task, TaskList } from "@/types/enums";
 //import { decode } from "base64-arraybuffer";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 
@@ -53,6 +53,7 @@ type ProviderProps = {
   ) => Promise<string | undefined>;
   getFileFromPath: (path: string) => Promise<string | undefined>;
   setUserPushToken: (token: string) => Promise<any>;
+  updateUserName: (userId: string, name: string) => Promise<any>;
 };
 
 const SupabaseContext = createContext<Partial<ProviderProps>>({});
@@ -195,7 +196,6 @@ export const SupabaseProvider = ({ children }: any) => {
         title: task.title,
         description: task.description,
         done: task.done,
-        position: task.position,
       })
       .match({ id: task.id });
   };
@@ -223,9 +223,8 @@ export const SupabaseProvider = ({ children }: any) => {
   };
 
   const findUsers = async (search: string) => {
-    console.log("Searching for users with email:", search);
     // Use the search_users stored procedure to find users by email
-    const { data } = await client.rpc("search_users", { search });
+    const { data } = await client.rpc("search_users", { search: search });
     return data;
   };
 
@@ -298,6 +297,21 @@ export const SupabaseProvider = ({ children }: any) => {
     return data;
   };
 
+  const updateUserName = async (userId: string, name: string) => {
+    const { error, data } = await client
+      .from(USERS_TABLE)
+      .update({ first_name: name })
+      .eq("id", userId)
+      .select() // <-- Esto es importante
+      .single();
+
+    if (error) {
+      console.error("Supabase updateUserName error:", error);
+      throw error;
+    }
+    return data;
+  };
+
   const value = {
     userId,
     createBoard,
@@ -322,6 +336,7 @@ export const SupabaseProvider = ({ children }: any) => {
     //uploadFile,
     getFileFromPath,
     setUserPushToken,
+    updateUserName,
   };
 
   return (
