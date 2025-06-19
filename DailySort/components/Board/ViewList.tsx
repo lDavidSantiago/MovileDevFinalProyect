@@ -11,6 +11,8 @@ import {
 import { DefaultTheme } from "@react-navigation/native";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import * as Haptics from "expo-haptics";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 import React, { useCallback, useEffect, useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DraggableFlatList, {
@@ -18,6 +20,9 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import { TextInput } from "react-native-gesture-handler";
 import ListItem from "./ListItem";
+import { useAuth } from "@clerk/clerk-expo";
+
+
 export interface ViewListProps {
   taskList: TaskList;
   onDelete?: () => void;
@@ -49,6 +54,8 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
   const [isAdding, setIsAdding] = useState(Boolean);
   const [newTask, setNewTask] = useState("");
   const [tasks, setTasks] = useState<Task[]>([]);
+  const {userId} = useAuth();
+  const { uploadFile } = useSupabase();
   useEffect(() => {
     loadListTasks();
     const subscription = getRealtimeCardSubscription!(
@@ -122,6 +129,33 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
       await updateCard!(item);
     });
   };
+
+  /////////////////////////////////////////
+  /////////////////////////////////////////
+  /////////////////////////////////////////
+  /////////////////////////////////////////
+  const onSelectImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      const img = result.assets[0];
+      const base64 = await FileSystem.readAsStringAsync(img.uri, { encoding: "base64" });
+      const fileName = `${new Date().getTime()}-${userId}.${img.type === 'image' ? 'png' : 'mp4'}`;
+      const filePath = `${taskList.board_id}/${fileName}`;
+      const contentType = img.type === 'image' ? 'image/png' : 'video/mp4';
+      const storagePath = await uploadFile!(filePath, base64, contentType);
+      console.log('Fuap ~ onSelectImage ~ storagePath:', storagePath);
+
+      if (storagePath){
+        addListCard!(taskList.id, taskList.board_id, fileName, tasks.length, storagePath)
+      }
+    }
+  };
+
   return (
     <BottomSheetModalProvider>
       <View style={{ paddingTop: 20, paddingHorizontal: 30 }}>
@@ -179,7 +213,7 @@ const ViewList = ({ taskList, onDelete }: ViewListProps) => {
                   <Ionicons name="add" size={14} />
                   <Text style={{ fontSize: 13 }}>Add card</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress = {onSelectImage}> 
                   <Ionicons name="image-outline" size={18} />
                 </TouchableOpacity>
               </>

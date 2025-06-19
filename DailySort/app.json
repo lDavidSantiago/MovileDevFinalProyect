@@ -35,7 +35,15 @@
         }
       ],
       "expo-secure-store",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "This app uses the photos to let you share them with you.",
+          "cameraPermission": "This app accesses your camera to let you take photos.",
+          "microphonePermission": "This app accesses your microphone to let you record audios."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

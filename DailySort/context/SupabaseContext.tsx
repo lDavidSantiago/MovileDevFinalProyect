@@ -2,8 +2,9 @@ import { Board, Task, TaskList } from "@/types/enums";
 import { client } from "@/utils/supabaseClient";
 import { useAuth } from "@clerk/clerk-expo";
 import { createContext, useContext, useEffect } from "react";
-//import { decode } from "base64-arraybuffer";
+import { decode } from "base64-arraybuffer";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
+
 
 export const BOARDS_TABLE = "boards";
 export const USER_BOARDS_TABLE = "user_boards";
@@ -262,17 +263,16 @@ export const SupabaseProvider = ({ children }: any) => {
       .subscribe();
   };
 
-  //   const uploadFile = async (
-  //     filePath: string,
-  //     base64: string,
-  //     contentType: string
-  //   ) => {
-  //     const { data } = await client.storage
-  //       .from(FILES_BUCKET)
-  //       .upload(filePath, decode(base64), { contentType });
-
-  //     return data?.path;
-  //   };
+  const uploadFile = async (
+    filePath: string,
+    base64: string,
+    contentType: string
+  ) => {
+    const { data } = await client.storage
+      .from(FILES_BUCKET)
+      .upload(filePath, decode(base64), { contentType });
+    return data?.path;
+  };
 
   const getFileFromPath = async (path: string) => {
     const { data } = await client.storage
@@ -319,7 +319,7 @@ export const SupabaseProvider = ({ children }: any) => {
     addUserToBoard,
     getBoardMember,
     getRealtimeCardSubscription,
-    //uploadFile,
+    uploadFile,
     getFileFromPath,
     setUserPushToken,
   };
@@ -330,3 +330,5 @@ export const SupabaseProvider = ({ children }: any) => {
     </SupabaseContext.Provider>
   );
 };
+
+

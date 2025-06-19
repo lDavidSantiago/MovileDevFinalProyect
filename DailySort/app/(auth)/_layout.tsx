@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import React from "react";
 import { TouchableOpacity } from "react-native";
+import { DefaultTheme } from '@react-navigation/native';
 const Layout = () => {
   const router = useRouter();
 
@@ -21,23 +22,15 @@ const Layout = () => {
           presentation: "modal",
         }}
       />
+      
       <Stack.Screen
-        name="board/invite"
+        name="board/card/[id]"
         options={{
-          title: "Manage Board Members",
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#E3DFE9",
-                borderRadius: 16,
-                padding: 6,
-              }}
-              onPress={() => router.back()}
-            >
-              <Ionicons name="chevron-back" size={18} color="black" />
-            </TouchableOpacity>
-          ),
-          presentation: "modal",
+          title: "",
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: DefaultTheme.colors.background,
+          },
         }}
       />
     </Stack>
