@@ -135,6 +135,20 @@ export const SupabaseProvider = ({ children }: any) => {
 
     return lists.data || [];
   };
+const getCreatedCards = async () => {
+  const { data, error } = await client
+    .from(CARDS_TABLE)
+    .select("*, users (*), boards(*)")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error al traer tus tarjetas:", error);
+    return [];
+  }
+
+  return data || [];
+};
+
 
   const addBoardList = async (boardId: string, title: string, position = 0) => {
     return await client
@@ -338,6 +352,7 @@ export const SupabaseProvider = ({ children }: any) => {
     getFileFromPath,
     setUserPushToken,
     updateUserName,
+    getCreatedCards
   };
 
   return (
