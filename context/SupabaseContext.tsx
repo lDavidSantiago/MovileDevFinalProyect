@@ -1,7 +1,7 @@
-import { createContext, useContext, useEffect } from "react";
+import { Board, Task, TaskList } from "@/types/enums";
 import { client } from "@/utils/supabaseClient";
 import { useAuth } from "@clerk/clerk-expo";
-import { Board, Task, TaskList } from "@/types/enums";
+import { createContext, useContext, useEffect } from "react";
 //import { decode } from "base64-arraybuffer";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 
@@ -195,6 +195,7 @@ export const SupabaseProvider = ({ children }: any) => {
         title: task.title,
         description: task.description,
         done: task.done,
+        position: task.position,
       })
       .match({ id: task.id });
   };

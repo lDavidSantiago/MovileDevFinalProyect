@@ -22,9 +22,7 @@ const InitialLayout = () => {
 
     if (isSignedIn && !inAuthGroup) {
       // If the user is signed in and in the auth group, redirect to the home page
-      console.log(
-        "User is signed in and in the auth group, redirecting to boards"
-      );
+     
       router.replace("/(auth)/(tabs)/boards");
     } else if (!isSignedIn) {
       // If the user is not signed in and not in the auth group, redirect to the auth page

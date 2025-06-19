@@ -94,10 +94,8 @@ const AuthModal = ({ authType }: AuthModalProps) => {
 
         if (createdSessionId) {
           setActive!({ session: createdSessionId });
-          console.log("OAuth success standard");
         }
       } catch (err) {
-        console.error("OAuth error", err);
       }
     }
   };

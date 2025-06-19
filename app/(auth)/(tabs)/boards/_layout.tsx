@@ -28,7 +28,6 @@ const Layout = () => {
             >
               <MenuOption
                 onSelect={() => {
-                  console.log("Crear tablero 🗣️🗣️");
                   setVisible(false);
                   router.push("/(auth)/(tabs)/boards/new-board");
                 }}
@@ -40,7 +39,6 @@ const Layout = () => {
               </MenuOption>
               <MenuOption
                 onSelect={() => {
-                  console.log("Crea Cartica ♥️♦️♠️");
                   setVisible(false);
                   router.push("/(auth)/(tabs)/boards/new-board");
                 }}
@@ -52,7 +50,6 @@ const Layout = () => {
               </MenuOption>
               <MenuOption
                 onSelect={() => {
-                  console.log("Borra la cuenta 🗣️🗣️");
                   setVisible(false);
                   router.push("/(auth)/(tabs)/boards/templates");
                 }}

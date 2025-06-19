@@ -47,7 +47,6 @@ export default function HomeScreen() {
       (selectedIndex: any) => {
         switch (selectedIndex) {
           case 0:
-            console.log("View support docs selected");
             break;
           case 1:
             WebBrowser.openBrowserAsync("https://github.com/lDavidSantiago");

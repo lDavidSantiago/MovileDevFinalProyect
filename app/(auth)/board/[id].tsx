@@ -24,7 +24,6 @@ const Page = () => {
 
   const loadBoardInfo = async () => {
     const data = await getBoardInfo!(id);
-    console.log("Board Info:", data);
     setBoard(data);
   };
   const CustomHeader = () => (

@@ -37,7 +37,6 @@ const BoardArea = ({ board }: BoardAreaProps) => {
   }, [board]);
   const loadBoardList = async () => {
     const lists = await getBoardLists!(board!.id);
-    console.log("Board Lists:", lists);
     setData([...lists, { id: undefined }]);
   };
   const ref = useRef<ICarouselInstance>(null);
@@ -50,9 +49,11 @@ const BoardArea = ({ board }: BoardAreaProps) => {
   const onSaveNewList = async (title: string) => {
     setStartListActive(false);
     const { data: newItem } = await addBoardList!(board?.id!, title);
-    console.log("OnSaveNewList data:", newItem);
     data.pop();
     setData([...data, newItem, { id: undefined }]);
+  };
+  const onListDeleted = (id: string) => {
+    setData(data.filter((item) => item.id !== id));
   };
   return (
     <View style={{ flex: 1 }}>
@@ -71,7 +72,7 @@ const BoardArea = ({ board }: BoardAreaProps) => {
                 <ViewList
                   key={index}
                   taskList={item}
-                  // onDelete={() => onListDeleted(item.id)}
+                  onDelete={() => onListDeleted(item.id)}
                 />
               )}
               {item.id === undefined && (

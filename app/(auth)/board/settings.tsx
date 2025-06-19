@@ -1,7 +1,8 @@
 import { Colors } from "@/constants/Colors";
 import { useSupabase } from "@/context/SupabaseContext";
 import { Board } from "@/types/enums";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
@@ -18,7 +19,6 @@ const Page = () => {
 
   const loadInfo = async () => {
     const data = await getBoardInfo!(id);
-    console.log("Board Info:", data);
     setBoard(data);
   };
   const onUpdateBoardInfo = async () => {
@@ -46,6 +46,32 @@ const Page = () => {
             onEndEditing={onUpdateBoardInfo}
           />
         </View>
+        <View style={styles.container}>
+          <View style={{ flexDirection: "row", gap: 14 }}>
+            <Ionicons name="person-outline" size={18} color="#000000" />
+            <Text
+              style={{
+                fontWeight: "bold",
+                color: Colors.grey,
+                fontSize: 16,
+              }}
+            >
+              Members
+            </Text>
+          </View>
+          {/* Add a button to manage members */}
+          <Link
+            href={{
+              pathname: "/(auth)/board/invite",
+              params: { id: id },
+            }}
+            asChild
+          >
+            <TouchableOpacity style={styles.fullBtn}>
+              <Text style={{fontSize:16,color:Colors.fontLight}}>Manage Members</Text>
+            </TouchableOpacity>
+          </Link>
+        </View>
       </View>
       <TouchableOpacity onPress={onDeleteBoard} style={styles.deleteBtn}>
         <Text style={{ color: " #c70000" }}>Delete Board</Text>
@@ -71,7 +97,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   fullBtn: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.blue,
     padding: 8,
     marginLeft: 32,
     marginRight: 16,

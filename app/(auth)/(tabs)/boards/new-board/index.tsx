@@ -19,7 +19,6 @@ const Page = () => {
   const { bg } = useGlobalSearchParams<{ bg?: string }>();
   const [selectedColor, setSelectedColor] = useState(DEFAULT_COLOR);
   useEffect(() => {
-    console.log("Bg Changed to: ", bg);
     if (bg) {
       setSelectedColor(bg);
     }

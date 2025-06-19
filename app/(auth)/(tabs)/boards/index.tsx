@@ -22,7 +22,6 @@ const Page = () => {
     }, [])
   );
   const loadBoards = async () => {
-    console.log("Loading boards...");
     const data = await getBoards!();
     setBoards(data);
   };
